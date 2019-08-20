@@ -27,55 +27,55 @@ import utilities.util.reflection.ReflectionUtilities;
         shortDescription = "Data organization fixer",
         description = "Fixes the DataOrganization for archives.",
         servicesRequired = { DataTypeManagerService.class }
-    )
+        )
 public class ArchiveOrganizationFixerPlugin extends ProgramPlugin {
 
     public ArchiveOrganizationFixerPlugin(PluginTool tool) {
         super(tool, false, false);
     }
-    
+
     @Override
-	protected void init() {
-    	/* The plugin is what implements the service. Yay for hax */
-    	DataTypeManagerPlugin dtmPlugin = (DataTypeManagerPlugin)((Object)this.tool.getService(DataTypeManagerService.class));
-    	
-    	dtmPlugin.getDataTypeManagerHandler().addArchiveManagerListener(new ArchiveManagerListener() {
-			@Override
-			public void archiveOpened(Archive archive) {
-				Program program = ArchiveOrganizationFixerPlugin.this.currentProgram;
-				
-				if (program == null) {
-					return;
-				}
-				
-				fixDataOrganization(program, archive.getDataTypeManager());
-			}
+    protected void init() {
+        /* The plugin is what implements the service. Yay for hax */
+        DataTypeManagerPlugin dtmPlugin = (DataTypeManagerPlugin)((Object)this.tool.getService(DataTypeManagerService.class));
 
-			@Override
-			public void archiveClosed(Archive archive) {
-			}
+        dtmPlugin.getDataTypeManagerHandler().addArchiveManagerListener(new ArchiveManagerListener() {
+            @Override
+            public void archiveOpened(Archive archive) {
+                Program program = ArchiveOrganizationFixerPlugin.this.currentProgram;
 
-			@Override
-			public void archiveStateChanged(Archive archive) {
-			}
+                if (program == null) {
+                    return;
+                }
 
-			@Override
-			public void archiveDataTypeManagerChanged(Archive archive) {
-			}
-    		
-    	});
-	}
+                fixDataOrganization(program, archive.getDataTypeManager());
+            }
+
+            @Override
+            public void archiveClosed(Archive archive) {
+            }
+
+            @Override
+            public void archiveStateChanged(Archive archive) {
+            }
+
+            @Override
+            public void archiveDataTypeManagerChanged(Archive archive) {
+            }
+
+        });
+    }
 
     @Override
     protected void programOpened(Program program) {
         DataTypeManagerService dtmService = this.tool.getService(DataTypeManagerService.class);
-        
+
         for (DataTypeManager dtm : dtmService.getDataTypeManagers()) {
-        	fixDataOrganization(program, dtm);
+            fixDataOrganization(program, dtm);
         }
     }
-    
-	private void fixDataOrganization(Program program, DataTypeManager dtm) {
+
+    private void fixDataOrganization(Program program, DataTypeManager dtm) {
         try {
             Field dataOrganizationField = ReflectionUtilities.locateFieldObjectOnClass("dataOrganization", DataTypeManagerDB.class);
             dataOrganizationField.setAccessible(true);
@@ -84,6 +84,6 @@ public class ArchiveOrganizationFixerPlugin extends ProgramPlugin {
         } catch (IllegalArgumentException | IllegalAccessException e) {
             Msg.error(this, "Failed to locate dataOrganization field", e);
         }
-	}
-    
+    }
+
 }
