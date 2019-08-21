@@ -1,4 +1,4 @@
-package main.java.adubbz;
+package main.java.adubbz.datamgr;
 
 import java.lang.reflect.Field;
 
@@ -39,6 +39,9 @@ public class ArchiveOrganizationFixerPlugin extends ProgramPlugin {
         /* The plugin is what implements the service. Yay for hax */
         DataTypeManagerPlugin dtmPlugin = (DataTypeManagerPlugin)((Object)this.tool.getService(DataTypeManagerService.class));
 
+        // Add our custom actions
+        this.tool.addLocalAction(dtmPlugin.getProvider(), new EditDataOrganizationAction(dtmPlugin));
+        
         dtmPlugin.getDataTypeManagerHandler().addArchiveManagerListener(new ArchiveManagerListener() {
             @Override
             public void archiveOpened(Archive archive) {
