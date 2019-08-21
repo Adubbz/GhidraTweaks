@@ -60,10 +60,24 @@ public class ArchiveOrganizationFixerPlugin extends ProgramPlugin {
 
             @Override
             public void archiveStateChanged(Archive archive) {
+                Program program = ArchiveOrganizationFixerPlugin.this.currentProgram;
+
+                if (program == null) {
+                    return;
+                }
+
+                fixDataOrganization(program, archive.getDataTypeManager());
             }
 
             @Override
             public void archiveDataTypeManagerChanged(Archive archive) {
+                Program program = ArchiveOrganizationFixerPlugin.this.currentProgram;
+
+                if (program == null) {
+                    return;
+                }
+
+                fixDataOrganization(program, archive.getDataTypeManager());
             }
 
         });
